@@ -4,53 +4,24 @@ google.charts.setOnLoadCallback(handleData);
 
 
 function handleData() {
-    const spreadsheetId = "1M7WLnM9Dgbz-fzpoJmbW3DSC9Z-apul8qMD0mJjmB1U";
-    const range = "Sheet2!G1"; // نطاق الخلية
-    const apiKey = "AIzaSyCUAGP16uXTJXugjn8wnjYrCSfyfRcfSns"; // أدخل مفتاح الـ API هنا
-  
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}?key=${apiKey}`;
-  
-    // تحقق من البيانات المخزنة في SessionStorage
-    const storedData = sessionStorage.getItem("productData");
-    const initialTime = sessionStorage.getItem("initialTime");
-  
-    fetch(url)
-      .then((response) => response.json())
-      .then((data) => {
-        const currentValue = data.values ? data.values[0][0] : null;
-        console.log("الوقت الحالي:", currentValue);
-  
-        if (!initialTime) {
-          // إذا لم تكن القيمة الأولية مخزنة، قم بتخزينها
-          sessionStorage.setItem("initialTime", currentValue);
-          console.log("تم تخزين الوقت الأولي:", currentValue);
-  
-          //  إذا لم تكن البيانات موجودة في SessionStorage، قم بتحميلها من Google Sheets
-      var query = new google.visualization.Query(
-        "https://docs.google.com/spreadsheets/d/1M7WLnM9Dgbz-fzpoJmbW3DSC9Z-apul8qMD0mJjmB1U/gviz/tq?sheet=Sheet2"
-      );
-      query.send(handleProductQueryResponse);
-        } else {
-          console.log("الوقت الأولي المخزن:", initialTime);
-  
-          if (initialTime === currentValue && storedData) {
-            // إذا كانت القيم متشابهة والبيانات موجودة في التخزين المؤقت
-            console.log("القيم متشابهة. عرض البيانات المخزنة.");
-            const rows = JSON.parse(storedData);
-            initializeDataTable(rows);
-          } else {
-            // إذا كانت القيم مختلفة أو لا توجد بيانات مخزنة
-            console.log("القيم مختلفة. تحديث البيانات من Google Sheets.");
-            sessionStorage.setItem("initialTime", currentValue); // تحديث الوقت الأولي
-            var query = new google.visualization.Query(
-              `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?sheet=Sheet2`
-            );
-            query.send(handleProductQueryResponse);
-          }
-        }
+    // جلب البيانات من الملف المحلي الذي سيقوم الأكشن بتحديثه
+    fetch('data.json')
+      .then((response) => {
+        if (!response.ok) throw new Error("لم يتم العثور على ملف البيانات");
+        return response.json();
       })
-      .catch((error) => console.error("خطأ في الاستعلام:", error));
-  }
+      .then((data) => {
+        console.log("تم تحميل البيانات بنجاح، عدد الأصناف:", data.length);
+        initializeDataTable(data);
+      })
+      .catch((error) => {
+        console.error("خطأ:", error);
+        alert("عذراً، تعذر تحميل قائمة الأدوية حالياً.");
+      });
+}
+
+// استدعاء الدالة عند تحميل الصفحة مباشرة
+document.addEventListener('DOMContentLoaded', handleData);
   
 
 function handleProductQueryResponse(response) {
@@ -89,54 +60,64 @@ function handleProductQueryResponse(response) {
 }
 
 function initializeDataTable(rows) {
-    // تهيئة DataTables
     $(document).ready(function () {
+      // مسح الجدول القديم إذا كان موجوداً لتجنب التكرار
+      if ($.fn.DataTable.isDataTable('#productTable')) {
+          $('#productTable').DataTable().destroy();
+      }
+
       $("#productTable").DataTable({
         data: rows,
         pageLength: 50,
         order: [[0, "desc"]],
         columns: [
-          { title: "ID", visible: false }, // جعل هذا العمود غير مرئي
-          { title: "Ex" },
-          { title: "الصنف" },
-          { title: "الكمية" },
-          { title: "السعر" },
-          { title: "طلب", orderable: false },
+          { data: "ID", title: "ID", visible: false }, 
+          { data: "Ex", title: "Ex" },
+          { data: "Name", title: "الصنف" },
+          { data: "Quantity", title: "الكمية" },
+          { data: "Price", title: "السعر" },
+          { 
+            data: null, 
+            title: "طلب", 
+            orderable: false,
+            render: function (data, type, row) {
+              return "<button class='order-button' onclick='openOrderModal(this)'>طلب</button>";
+            }
+          },
         ],
         language: {
           url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/ar.json",
         },
       });
     });
-  }
+}
 
 
 // فتح نافذة الطلب
 function openOrderModal(button) {
-    const row = button.parentNode.parentNode;
-  // ملاحظة: نستخدم cells[3] للحصول على الكمية المتوفرة (عمود الكمية في الجدول)
-  const availableQuantity = parseInt(row.cells[2].innerHTML.trim()); 
+    const table = $('#productTable').DataTable();
+    const rowData = table.row($(button).parents('tr')).data(); // سحب البيانات مباشرة من صف الداتا تيبل
 
-  const productName = button.parentNode.parentNode.cells[1].innerHTML;
-  const productPrice = button.parentNode.parentNode.cells[3].innerHTML; // الحصول على السعر
-  const productDate = button.parentNode.parentNode.cells[0].innerHTML; // الحصول على التاريخ (تأكد من موقعه الصحيح)
+    const productID = rowData.ID;
+    const productName = rowData.Name;
+    const productPrice = rowData.Price;
+    const productDate = rowData.Ex;
+    const availableQuantity = parseInt(rowData.Quantity);
 
-  document.getElementById("modalProductDate").innerText = `الانتهاء: ${productDate}`;
-  // تعيين التاريخ في النافذة
-  document.getElementById("modalProductName").innerText = productName;
-  document.getElementById("orderModal").dataset.price = productPrice; // تخزين السعر في بيانات النافذة
-  
-  document.getElementById("orderModal").dataset.availableQuantity = availableQuantity; // **جديد:** تخزين الكمية المتوفرة
- 
-  // عرض النافذة
-  document.getElementById("orderModal").style.display = "block";
-  document.getElementById("overlay").classList.add("show");
+    // تعبئة البيانات في المودال (النافذة)
+    document.getElementById("modalProductDate").innerText = `الانتهاء: ${productDate}`;
+    document.getElementById("modalProductName").innerText = productName;
+    
+    const orderModal = document.getElementById("orderModal");
+    orderModal.dataset.price = productPrice; 
+    orderModal.dataset.availableQuantity = availableQuantity;
+    orderModal.dataset.id = productID; // تخزين الـ ID أيضاً لضمان الدقة
 
-   // إعادة تعيين قيمة حقل الكمية في النافذة إلى 1
-  document.getElementById("quantity").value = 1;
-
-    // إخفاء رسائل الخطأ القديمة إذا وجدت
-  document.getElementById("quantityError").style.display = 'none'; 
+    // إظهار النافذة
+    orderModal.style.display = "block";
+    document.getElementById("overlay").classList.add("show");
+    document.getElementById("quantity").value = 1;
+    document.getElementById("quantityError").style.display = 'none'; 
 }
 
 // إغلاق النافذة
