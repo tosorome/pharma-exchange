@@ -1,7 +1,3 @@
-// استدعاء بيانات Google Apps Script
-google.charts.load("current", { packages: ["table"] });
-google.charts.setOnLoadCallback(handleData);
-
 
 function handleData() {
     // جلب البيانات من الملف المحلي الذي سيقوم الأكشن بتحديثه
@@ -24,16 +20,7 @@ function handleData() {
 document.addEventListener('DOMContentLoaded', handleData);
   
 
-function handleProductQueryResponse(response) {
-  if (response.isError()) {
-    console.error(
-      "Error in query: " +
-        response.getMessage() +
-        " " +
-        response.getDetailedMessage()
-    );
-    return;
-  }
+
 
   var data = response.getDataTable();
   var rows = [];
