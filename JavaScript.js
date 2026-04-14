@@ -5,7 +5,7 @@ google.charts.setOnLoadCallback(handleData);
 
 function handleData() {
     // جلب البيانات من الملف المحلي الذي سيقوم الأكشن بتحديثه
-    fetch('/data.json')
+    fetch('./data.json')
       .then((response) => {
         if (!response.ok) throw new Error("لم يتم العثور على ملف البيانات");
         return response.json();
