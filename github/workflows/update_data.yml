@@ -18,9 +18,14 @@ jobs:
           python3 -c "
           import pandas as pd
           # استبدل الرابط برابط الـ CSV من جوجل (نشر على الويب)
-          url = 'https://docs.google.com/spreadsheets/d/1M7WLnM9Dgbz-fzpoJmbW3DSC9Z-apul8qMD0mJjmB1U/export?format=csv'
+         # الرابط مع تحديد الورقة Sheet2 (gid=111442171 هو مثال، تأكد من gid ورقتك أو استخدم الرابط أدناه)
+          url = 'https://docs.google.com/spreadsheets/d/1M7WLnM9Dgbz-fzpoJmbW3DSC9Z-apul8qMD0mJjmB1U/gviz/tq?tqx=out:csv&sheet=Sheet2'
           df = pd.read_csv(url)
-          # تأكد أن أسماء الأعمدة في الإكسل هي: ID, Ex, Name, Quantity, Price
+          
+          # سنقوم بتنظيف البيانات لضمان عدم وجود مسافات زائدة في العناوين
+          df.columns = df.columns.str.strip()
+          
+          # تحويل لـ JSON
           df.to_json('data.json', orient='records', force_ascii=False)
           "
       - name: Commit changes
