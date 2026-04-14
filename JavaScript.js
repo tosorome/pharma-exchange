@@ -59,69 +59,65 @@ function handleProductQueryResponse(response) {
 
 }
 
+// دالة تهيئة الجدول
 function initializeDataTable(rows) {
     $(document).ready(function () {
-      // مسح الجدول القديم إذا كان موجوداً لتجنب التكرار
-      if ($.fn.DataTable.isDataTable('#productTable')) {
-          $('#productTable').DataTable().destroy();
-      }
+        if ($.fn.DataTable.isDataTable('#productTable')) {
+            $('#productTable').DataTable().destroy();
+        }
 
-      $("#productTable").DataTable({
-        data: rows,
-        pageLength: 50,
-        order: [[0, "desc"]],
-        columns: [
-  { data: "ID", title: "ID", visible: false }, 
-  { data: "Date", title: "الانتهاء" }, // لاحظ استخدمنا Date بدل Ex
-  { data: "Product Name", title: "الصنف" }, // لاحظ استخدمنا Product Name
-  { data: "Qty", title: "الكمية" }, // لاحظ استخدمنا Qty
-  { data: "Price", title: "السعر" },
-  { 
-    data: null, 
-    title: "طلب", 
-    orderable: false,
-    render: function (data, type, row) {
-      return "<button class='order-button' onclick='openOrderModal(this)'>طلب</button>";
-    }
-  },
-],
-        language: {
-          url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/ar.json",
-        },
-      });
+        $("#productTable").DataTable({
+            data: rows,
+            pageLength: 50,
+            order: [[0, "desc"]],
+            columns: [
+                { data: "ID", title: "ID", visible: false }, 
+                { data: "Date", title: "الانتهاء" }, 
+                { data: "Product Name", title: "الصنف" }, 
+                { data: "Qty", title: "الكمية" }, 
+                { data: "Price", title: "السعر" },
+                { 
+                    data: null, 
+                    title: "طلب", 
+                    orderable: false,
+                    render: function (data, type, row) {
+                        return "<button class='order-button' onclick='openOrderModal(this)'>طلب</button>";
+                    }
+                },
+            ],
+            language: {
+                url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/ar.json",
+            },
+        });
     });
 }
 
-
-// فتح نافذة الطلب
+// دالة فتح نافذة الطلب (تم تصحيح التكرار)
 function openOrderModal(button) {
-   
     const table = $('#productTable').DataTable();
     const rowData = table.row($(button).parents('tr')).data();
 
-    // نستخدم نفس الأسماء الموجودة في الإكسل
+    if (!rowData) return; // تأمين الكود في حال لم يجد بيانات
+
     const productID = rowData["ID"];
     const productName = rowData["Product Name"];
     const productPrice = rowData["Price"];
     const productDate = rowData["Date"];
     const availableQuantity = parseInt(rowData["Qty"]);
 
-    // تعبئة البيانات في المودال (النافذة)
     document.getElementById("modalProductDate").innerText = `الانتهاء: ${productDate}`;
     document.getElementById("modalProductName").innerText = productName;
     
     const orderModal = document.getElementById("orderModal");
     orderModal.dataset.price = productPrice; 
     orderModal.dataset.availableQuantity = availableQuantity;
-    orderModal.dataset.id = productID; // تخزين الـ ID أيضاً لضمان الدقة
+    orderModal.dataset.id = productID;
 
-    // إظهار النافذة
     orderModal.style.display = "block";
     document.getElementById("overlay").classList.add("show");
     document.getElementById("quantity").value = 1;
     document.getElementById("quantityError").style.display = 'none'; 
 }
-
 // إغلاق النافذة
 function closeModal() {
   document.getElementById("orderModal").style.display = "none";
