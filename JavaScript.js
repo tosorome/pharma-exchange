@@ -95,7 +95,7 @@ function initializeDataTable(rows) {
 
 // فتح نافذة الطلب
 function openOrderModal(button) {
-    function openOrderModal(button) {
+   
     const table = $('#productTable').DataTable();
     const rowData = table.row($(button).parents('tr')).data();
 
