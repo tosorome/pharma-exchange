@@ -34,6 +34,47 @@
     <link href="Style.css" rel="stylesheet" />
 
     <style>
+        /* خاصه ب ازرار تصفح الأدوية و تصريف الأدوية*/
+             .buttons {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+
+    .btn {
+    font-family: "Tajawal", sans-serif !important;
+        padding: 8px 25px;
+        border: none;
+        border-radius: 10px;
+        font-size: 14px;
+        cursor: pointer;
+        color: white;
+        transition: 0.3s;
+        display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    }
+    .btn {
+    
+}
+
+    .btn-green {
+        background: #2e7d32;
+    }
+
+    .btn-green:hover {
+        background: #1b5e20;
+    }
+
+    .btn-orange {
+        background: #f97316;
+    }
+
+    .btn-orange:hover {
+        background: #ea580c;
+    }
         
 
         .alert {
@@ -85,7 +126,30 @@ footer p {
 
     <div class="header">
         <h1 class="name">صرفلي</h1>
-        <h3 class="description">منصة تبادل وتصريف الأدوية المكدسة والمقربة بأسعار مخفضة</h3>
+          <div class="description">
+              💊 منصة لتصريف الأدوية المكدسة والمقربة بأسعار <b>مخفضة</b>
+            </div>
+            
+<!--         <div class="alert">لصيدليات فقط</div>  التنبيه هنا --> 
+    <div class="buttons">    
+        <button class="btn btn-green" onclick="scrollToProducts()">
+            
+           
+           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+         تصفح الأدوية
+        </button>
+
+        <button class="btn btn-orange" onclick="sendToWhatsApp()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24">
+<line x1="12" y1="5" x2="12" y2="19"></line>
+<line x1="5" y1="12" x2="19" y2="12"></line>
+</svg>
+             تصريف أدوية
+        </button>
+    </div>
 <!--         <div class="alert">لصيدليات فقط</div>  التنبيه هنا --> 
 
     </div>
