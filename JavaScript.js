@@ -22,30 +22,7 @@ document.addEventListener('DOMContentLoaded', handleData);
 
 
 
-  var data = response.getDataTable();
-  var rows = [];
-
-  // إنشاء الصفوف
-  for (var i = 0; i < data.getNumberOfRows(); i++) {
-    var row = [];
-    for (var j = 0; j < 5; j++) {
-      row.push(data.getValue(i, j));
-    }
-    // إضافة زر الطلب
-    row.push(
-      "<button class='order-button' onclick='openOrderModal(this)'>طلب</button>"
-    );
-    rows.push(row);
-  }
-
-    // تخزين البيانات في SessionStorage
-    sessionStorage.setItem("productData", JSON.stringify(rows));
-
-    // تهيئة DataTables
-    initializeDataTable(rows);
-
-}
-
+ 
 // دالة تهيئة الجدول
 function initializeDataTable(rows) {
     
