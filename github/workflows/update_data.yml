@@ -1,33 +1,29 @@
-name: Update Pharma Data
+name: Sync Med Data
 on:
   schedule:
-    - cron: '*/30 * * * *' # يحدث كل 30 دقيقة
+    - cron: '*/30 * * * *' # يحدث البيانات كل 30 دقيقة تلقائياً
   workflow_dispatch:
 
 jobs:
-  build:
+  update:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.x'
-      - name: Fetch Data
+      - name: Fetch and Save Data
         run: |
-          pip install pandas requests
-          python -c "
+          # هنا نستخدم بايثون لجلب البيانات وتحويلها لـ JSON
+          python3 -c "
           import pandas as pd
-          # ضع رابط الـ CSV الذي حصلت عليه من (نشر على الويب) هنا
-          url = 'رابط_الـCSV_الخاص_بك'
+          # استبدل الرابط برابط الـ CSV من جوجل (نشر على الويب)
+          url = 'https://docs.google.com/spreadsheets/d/1M7WLnM9Dgbz-fzpoJmbW3DSC9Z-apul8qMD0mJjmB1U/export?format=csv'
           df = pd.read_csv(url)
-          # تحويل البيانات لملف JSON محلي
+          # تأكد أن أسماء الأعمدة في الإكسل هي: ID, Ex, Name, Quantity, Price
           df.to_json('data.json', orient='records', force_ascii=False)
           "
-      - name: Push Data
+      - name: Commit changes
         run: |
           git config --global user.name 'DataBot'
           git config --global user.email 'bot@github.com'
           git add data.json
-          git commit -m 'Auto-update data' || exit 0
+          git commit -m 'تحديث تلقائي للمخزون' || exit 0
           git push
