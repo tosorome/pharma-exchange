@@ -1,0 +1,33 @@
+name: Update Pharma Data
+on:
+  schedule:
+    - cron: '*/30 * * * *' # يحدث كل 30 دقيقة
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+      - name: Fetch Data
+        run: |
+          pip install pandas requests
+          python -c "
+          import pandas as pd
+          # ضع رابط الـ CSV الذي حصلت عليه من (نشر على الويب) هنا
+          url = 'رابط_الـCSV_الخاص_بك'
+          df = pd.read_csv(url)
+          # تحويل البيانات لملف JSON محلي
+          df.to_json('data.json', orient='records', force_ascii=False)
+          "
+      - name: Push Data
+        run: |
+          git config --global user.name 'DataBot'
+          git config --global user.email 'bot@github.com'
+          git add data.json
+          git commit -m 'Auto-update data' || exit 0
+          git push
