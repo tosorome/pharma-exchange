@@ -71,20 +71,20 @@ function initializeDataTable(rows) {
         pageLength: 50,
         order: [[0, "desc"]],
         columns: [
-          { data: "ID", title: "ID", visible: false }, 
-          { data: "Ex", title: "Ex" },
-          { data: "Name", title: "الصنف" },
-          { data: "Quantity", title: "الكمية" },
-          { data: "Price", title: "السعر" },
-          { 
-            data: null, 
-            title: "طلب", 
-            orderable: false,
-            render: function (data, type, row) {
-              return "<button class='order-button' onclick='openOrderModal(this)'>طلب</button>";
-            }
-          },
-        ],
+  { data: "ID", title: "ID", visible: false }, 
+  { data: "Date", title: "الانتهاء" }, // لاحظ استخدمنا Date بدل Ex
+  { data: "Product Name", title: "الصنف" }, // لاحظ استخدمنا Product Name
+  { data: "Qty", title: "الكمية" }, // لاحظ استخدمنا Qty
+  { data: "Price", title: "السعر" },
+  { 
+    data: null, 
+    title: "طلب", 
+    orderable: false,
+    render: function (data, type, row) {
+      return "<button class='order-button' onclick='openOrderModal(this)'>طلب</button>";
+    }
+  },
+],
         language: {
           url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/ar.json",
         },
@@ -95,14 +95,16 @@ function initializeDataTable(rows) {
 
 // فتح نافذة الطلب
 function openOrderModal(button) {
+    function openOrderModal(button) {
     const table = $('#productTable').DataTable();
-    const rowData = table.row($(button).parents('tr')).data(); // سحب البيانات مباشرة من صف الداتا تيبل
+    const rowData = table.row($(button).parents('tr')).data();
 
-    const productID = rowData.ID;
-    const productName = rowData.Name;
-    const productPrice = rowData.Price;
-    const productDate = rowData.Ex;
-    const availableQuantity = parseInt(rowData.Quantity);
+    // نستخدم نفس الأسماء الموجودة في الإكسل
+    const productID = rowData["ID"];
+    const productName = rowData["Product Name"];
+    const productPrice = rowData["Price"];
+    const productDate = rowData["Date"];
+    const availableQuantity = parseInt(rowData["Qty"]);
 
     // تعبئة البيانات في المودال (النافذة)
     document.getElementById("modalProductDate").innerText = `الانتهاء: ${productDate}`;
