@@ -1,7 +1,7 @@
 name: Sync Med Data
 on:
   schedule:
-    - cron: '*/30 * * * *' # يحدث البيانات كل 30 دقيقة تلقائياً
+    - cron: '*/30 * * * *' # تحديث كل 30 دقيقة
   workflow_dispatch:
 
 jobs:
@@ -9,25 +9,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
       - name: Fetch and Save Data
         run: |
-          # تثبيت المكتبات المطلوبة أولاً
           pip install pandas requests
-          
-          # هنا نستخدم بايثون لجلب البيانات وتحويلها لـ JSON
           python3 -c "
           import pandas as pd
-          # استبدل الرابط برابط الـ CSV من جوجل (نشر على الويب)
-         # الرابط مع تحديد الورقة Sheet2 (gid=111442171 هو مثال، تأكد من gid ورقتك أو استخدم الرابط أدناه)
           url = 'https://docs.google.com/spreadsheets/d/1M7WLnM9Dgbz-fzpoJmbW3DSC9Z-apul8qMD0mJjmB1U/gviz/tq?tqx=out:csv&sheet=Sheet2'
           df = pd.read_csv(url)
-          
-          # سنقوم بتنظيف البيانات لضمان عدم وجود مسافات زائدة في العناوين
           df.columns = df.columns.str.strip()
-          
-          # تحويل لـ JSON
           df.to_json('data.json', orient='records', force_ascii=False)
           "
+
       - name: Commit changes
         run: |
           git config --global user.name 'DataBot'
