@@ -39,9 +39,8 @@ body {
 
         /* تنسيق الوصف */
         .description {
-            background-color: rgba(255, 255, 255, 0.8);
-            /* خلفية بيضاء شبه شفافة */
-            color: blue;
+            
+            color: #555;
             /* لون النص أزرق */
             padding: 10px 20px;
             /* مسافة داخلية حول النص */
@@ -51,10 +50,7 @@ body {
             /* جعل العرض بطول النص */
             text-align: center;
             /* توسيط النص */
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            /* ظل خفيف للصندوق */
-            border-radius: 8px;
-            /* زوايا مستديرة للصندوق */
+            
             font-size: 1.2rem;
             /* حجم الخط */
         }
