@@ -59,36 +59,38 @@ function initializeDataTable(rows) {
             ],
             // منطق التلوين التلقائي
             createdRow: function (row, data, dataIndex) {
-                const exDateStr = data["Date"]; // جلب التاريخ
-                if (!exDateStr) return;
+    let exDateStr = data["Date"]; // جلب التاريخ (مثلاً 26-05)
+    if (!exDateStr) return;
 
-                // تحويل التاريخ (نفترض أن التنسيق YYYY-MM أو YYYY كما في ملفك)
-                const exDate = new Date(exDateStr);
-                const today = new Date();
-                
-                // حساب الفرق بالشهور
-                const diffMonths = (exDate.getFullYear() - today.getFullYear()) * 12 + (exDate.getMonth() - today.getMonth());
+    // إصلاح التنسيق: إذا كان التاريخ مثل 26-05، نحوله إلى 2026-05-01 ليفهمه المتصفح
+    if (exDateStr.includes('-') && exDateStr.length === 5) {
+        exDateStr = "20" + exDateStr + "-01"; 
+    }
 
-                const dateCell = $('td', row).eq(0); // الخلية الأولى الظاهرة (تاريخ الانتهاء)
+    const exDate = new Date(exDateStr);
+    const today = new Date();
+    
+    // حساب الفرق بالشهور
+    const diffMonths = (exDate.getFullYear() - today.getFullYear()) * 12 + (exDate.getMonth() - today.getMonth());
 
-                if (diffMonths <= 3) {
-                    // أقل من 3 أشهر - أحمر
-                    dateCell.css({
-                        'background-color': '#ffcccc',
-                        'color': '#cc0000',
-                        'font-weight': 'bold',
-                        'border-radius': '4px'
-                    });
-                } else if (diffMonths <= 6) {
-                    // بين 3 و 6 أشهر - أصفر
-                    dateCell.css({
-                        'background-color': '#fff3cd',
-                        'color': '#856404',
-                        'font-weight': 'bold',
-                        'border-radius': '4px'
-                    });
-                }
-            },
+    const dateCell = $('td', row).eq(0); 
+
+    if (diffMonths <= 3) {
+        // أقل من 3 أشهر - أحمر
+        dateCell.css({
+            'background-color': '#ffcccc',
+            'color': '#cc0000',
+            'font-weight': 'bold'
+        });
+    } else if (diffMonths <= 6) {
+        // بين 3 و 6 أشهر - أصفر
+        dateCell.css({
+            'background-color': '#fff3cd',
+            'color': '#856404',
+            'font-weight': 'bold'
+        });
+    }
+},
             language: {
                 url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/ar.json",
             },
