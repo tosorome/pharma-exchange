@@ -53,7 +53,7 @@ function initializeDataTable(rows) {
                     title: "طلب", 
                     orderable: false,
                     render: function (data, type, row) {
-                        return "<button class='order-button' onclick='openOrderModal(this)'>طلب</button>";
+                        return "<button class='order-button' onclick='openOrderModal(this)'>🛒إضافة</button>";
                     }
                 },
             ],
