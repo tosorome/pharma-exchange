@@ -19,7 +19,17 @@ function handleData() {
 // استدعاء الدالة عند تحميل الصفحة مباشرة
 document.addEventListener('DOMContentLoaded', handleData);
   
-
+      /*ضغط عرض الأدوية ينزل الي قسم الأدوية */
+function scrollToProducts() {
+    document.getElementById("productTable").scrollIntoView({
+        behavior: "smooth"
+    });
+}
+/* زر تصريف الأدوية*/
+function sendToWhatsApp() {
+    let message = "السلام عليكم، أرغب في تصريف الأدوية التالية:%0A- اسم الدواء:%0A- الكمية:%0A- تاريخ الانتهاء:%0A- السعر:";
+    window.open("https://wa.me/967770963942?text=" + message, "_blank");
+}
  
 // دالة تهيئة الجدول
 function initializeDataTable(rows) {
@@ -400,17 +410,7 @@ function sendOrderViaWhatsApp() {
       .padEnd(6)} | ${price.padEnd(7)} | ${totalPrice.padEnd(7)}\n`;
   });
 
-      /*ضغط عرض الأدوية ينزل الي قسم الأدوية */
-function scrollToProducts() {
-    document.getElementById("productTable").scrollIntoView({
-        behavior: "smooth"
-    });
-}
-/* زر تصريف الأدوية*/
-function sendToWhatsApp() {
-    let message = "السلام عليكم، أرغب في تصريف الأدوية التالية:%0A- اسم الدواء:%0A- الكمية:%0A- تاريخ الانتهاء:%0A- السعر:";
-    window.open("https://wa.me/967770963942?text=" + message, "_blank");
-}
+
   // حساب الإجمالي النهائي
   let totalSum = orders.reduce((sum, order) => sum + order.totalPrice, 0);
   message += `\nالإجمالي الكلي: ${totalSum.toFixed(2)} ريال`;
