@@ -41,7 +41,7 @@ function initializeDataTable(rows) {
         $("#productTable").DataTable({
             data: rows,
             pageLength: 50,
-            order: [[0, "desc"]],
+            order: [[1, "asc"]], // ترتيب حسب تاريخ الانتهاء الأقرب
             columns: [
                 { data: "ID", title: "ID", visible: false }, 
                 { data: "Date", title: "الانتهاء" }, 
@@ -57,6 +57,38 @@ function initializeDataTable(rows) {
                     }
                 },
             ],
+            // منطق التلوين التلقائي
+            createdRow: function (row, data, dataIndex) {
+                const exDateStr = data["Date"]; // جلب التاريخ
+                if (!exDateStr) return;
+
+                // تحويل التاريخ (نفترض أن التنسيق YYYY-MM أو YYYY كما في ملفك)
+                const exDate = new Date(exDateStr);
+                const today = new Date();
+                
+                // حساب الفرق بالشهور
+                const diffMonths = (exDate.getFullYear() - today.getFullYear()) * 12 + (exDate.getMonth() - today.getMonth());
+
+                const dateCell = $('td', row).eq(0); // الخلية الأولى الظاهرة (تاريخ الانتهاء)
+
+                if (diffMonths <= 3) {
+                    // أقل من 3 أشهر - أحمر
+                    dateCell.css({
+                        'background-color': '#ffcccc',
+                        'color': '#cc0000',
+                        'font-weight': 'bold',
+                        'border-radius': '4px'
+                    });
+                } else if (diffMonths <= 6) {
+                    // بين 3 و 6 أشهر - أصفر
+                    dateCell.css({
+                        'background-color': '#fff3cd',
+                        'color': '#856404',
+                        'font-weight': 'bold',
+                        'border-radius': '4px'
+                    });
+                }
+            },
             language: {
                 url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/ar.json",
             },
