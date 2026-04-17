@@ -21,6 +21,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@200;300;400;500;700;800;900&display=swap" rel="stylesheet">
 
 
+    <link rel="manifest" href="manifest.json">
+    
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-0245MFWY2F"></script>
     <script>
@@ -29,6 +31,13 @@
         gtag('js', new Date());
 
         gtag('config', 'G-0245MFWY2F');
+    </script>
+    <script>
+        if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./service-worker.js');
+    });
+        }
     </script>
 
     <link href="Style.css" rel="stylesheet" />
