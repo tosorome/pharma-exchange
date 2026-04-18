@@ -6,6 +6,10 @@ self.addEventListener('install', (e) => {
 
 self.addEventListener('fetch', (e) => {
   e.respondWith(
-    caches.match(e.request).then((response) => response || fetch(e.request))
+    // 1. حاول أولاً جلب البيانات من الإنترنت
+    fetch(e.request).catch(() => {
+      // 2. إذا فشل الإنترنت (أوفلاين)، اذهب للذاكرة المخزنة
+      return caches.match(e.request);
+    })
   );
 });
