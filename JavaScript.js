@@ -8,6 +8,7 @@ function handleData() {
       })
       .then((data) => {
         console.log("تم تحميل البيانات بنجاح، عدد الأصناف:", data.length);
+          document.getElementById("products-count").innerText = data.length;
         initializeDataTable(data);
       })
       .catch((error) => {
