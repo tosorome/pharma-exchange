@@ -43,6 +43,15 @@
     <link href="Style.css" rel="stylesheet" />
 
     <style>
+        /*عدد الاصناف المتوفرة*/
+        .count-badge{
+    background: #e8f5e9;
+    color: #2e7d32;
+    font-size: 18px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-weight: bold;
+        }
         /* خاصه ب ازرار تصفح الأدوية و تصريف الأدوية*/
              .buttons {
         display: flex;
@@ -243,7 +252,9 @@ footer p {
         <!-- <div class="box"> -->
             <div class="box available-items-card">
             <!-- <h2>الاصناف المتوفرة</h2> -->
-             <h2 class="table-title">الاصناف المتوفرة</h2>
+             <h2 class="table-title">الاصناف المتوفرة
+             <span id="products-count" class="count-badge"></span>
+             </h2>
 <div style="overflow-x: auto; width: 100%;">
 
             <table id="productTable">
